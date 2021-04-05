@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="450.0" prefWidth="600.0" style="-fx-background-color: #f8efe8;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.LogInController">
+    <children>
+        <TableView layoutX="33.0" layoutY="47.0" prefHeight="324.0" prefWidth="544.0">
+            <columns>
+                <TableColumn prefWidth="190.0" text="Show" />
+                <TableColumn prefWidth="239.0" text="Client" />
+                <TableColumn prefWidth="114.0" text="Seats" />
+            </columns>
+        </TableView>
+        <Button layoutX="146.0" layoutY="392.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="308.0" style="-fx-background-color: #DDAF94;" text="Cancel reservation" />
+        <Label layoutX="251.0" layoutY="14.0" text="All reservations" underline="true">
+         <font>
+            <Font size="16.0" />
+         </font></Label>
+    </children>
+</AnchorPane>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="315.0" prefWidth="444.0" style="-fx-background-color: #FDF8F5;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.LogInController">
+    <children>
+        <Label layoutX="100.0" layoutY="51.0" text="Logged in as:" />
+        <TextField layoutX="188.0" layoutY="47.0" />
+        <Button layoutX="135.0" layoutY="125.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="175.0" style="-fx-background-color: #DDAF94;" text="Manage shows" />
+        <Button layoutX="135.0" layoutY="188.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="175.0" style="-fx-background-color: #DDAF94;" text="View reservations" />
+
+
+    </children>
+</AnchorPane>
