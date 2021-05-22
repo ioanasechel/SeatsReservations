@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="seatsreservations.domain.Show"
+           table="SHOWS">
+        <id name="ID" column="Show_ID">
+        </id>
+        <property
+                name="title"
+                column="Title"/>
+        <property
+                name="date"
+                column="Date"/>
+        <list name="seats" cascade="all" table="SEATS_LIST">
+            <key column="Show_ID"/>
+            <index column="Seat_Number"/>
+            <one-to-many class="seatsreservations.domain.Seat"/>
+        </list>
+
+    </class>
+</hibernate-mapping>

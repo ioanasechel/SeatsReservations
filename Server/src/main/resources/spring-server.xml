@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    <util:properties id="dbProperties" location="classpath:/server.properties" />
+
+    <bean id="managerRepo" class="seatsreservations.repository.jdbc.ManagerHBMRepository">
+        <constructor-arg ref="dbProperties"/>
+    </bean>
+    <bean id="showRepo" class="seatsreservations.repository.jdbc.ShowHBMRepository">
+        <constructor-arg ref="dbProperties"/>
+    </bean>
+    <bean id="reservationRepo" class="seatsreservations.repository.jdbc.ReservationHBMRepository">
+        <constructor-arg ref="dbProperties"/>
+    </bean>
+    <bean id="seatRepo" class="seatsreservations.repository.jdbc.SeatHBMRepository">
+        <constructor-arg ref="dbProperties"/>
+    </bean>
+
+    <bean id="seatsReservationsService" class="seatsreservations.server.ServiceImpl">
+        <constructor-arg ref="managerRepo"/>
+        <constructor-arg ref="showRepo"/>
+        <constructor-arg ref="seatRepo"/>
+        <constructor-arg ref="reservationRepo"/>
+    </bean>
+
+    <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+
+        <property name="serviceName" value="seatsreservations"/>
+        <property name="service" ref="seatsReservationsService"/>
+        <property name="serviceInterface" value="seatsreservations.service.Service"/>
+        <property name="servicePort" value="1099"/>
+    </bean>
+</beans>
