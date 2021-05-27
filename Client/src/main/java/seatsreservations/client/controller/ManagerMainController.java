@@ -1,15 +1,10 @@
 package seatsreservations.client.controller;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import seatsreservations.domain.Manager;
@@ -17,7 +12,6 @@ import seatsreservations.domain.Reservation;
 import seatsreservations.domain.Show;
 import seatsreservations.service.Observer;
 import seatsreservations.service.Service;
-import seatsreservations.service.ServiceException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -41,7 +35,7 @@ public class ManagerMainController extends UnicastRemoteObject implements Initia
 
     }
 
-    public void setService(Service service) {
+    public void setService(Service service, Manager manager) {
         this.service = service;
         managerLogged.setDisable(true);
         //managerLogged.setText(manager.getUsername());
@@ -57,7 +51,7 @@ public class ManagerMainController extends UnicastRemoteObject implements Initia
     }
 
     @Override
-    public void reservationMade(List<Reservation> list_reservations) throws RemoteException {
+    public void reservationUpdate(List<Reservation> list_reservations) throws RemoteException {
 
     }
 
@@ -78,6 +72,20 @@ public class ManagerMainController extends UnicastRemoteObject implements Initia
         ManagerShowController managerShowController = loader.getController();
         managerShowController.setService(service);
         managerShowController.initialize();
+
+        newStage.show();
+    }
+    @FXML
+    private void loadReservationsStage() throws IOException {
+        Stage newStage = new Stage();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/views/ManagerReservationsPage.fxml"));
+        AnchorPane layout = loader.load();
+        newStage.setScene(new Scene(layout));
+
+        ManagerReservationController managerReservationController = loader.getController();
+        managerReservationController.setService(service);
+        managerReservationController.initialize();
 
         newStage.show();
     }

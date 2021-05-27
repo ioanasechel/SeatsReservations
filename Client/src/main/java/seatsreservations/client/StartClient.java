@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import seatsreservations.client.controller.LoginController;
 import seatsreservations.client.controller.ManagerMainController;
+import seatsreservations.client.controller.UserMainController;
 import seatsreservations.service.Service;
 
 import java.io.IOException;
@@ -60,18 +61,6 @@ public class StartClient extends Application {
         LoginController loginController =
                 loader.<LoginController>getController();
         loginController.setService(server);
-
-        FXMLLoader cloader = new FXMLLoader();
-        cloader.setLocation(getClass().getResource("/views/ManagerMainPage.fxml"));
-        Parent croot=cloader.load();
-
-        ManagerMainController mainController =
-                cloader.<ManagerMainController>getController();
-        mainController.setService(server);
-
-        loginController.setManagerMainController(mainController);
-        loginController.setParent(croot);
-
 
         primaryStage.setTitle("Seats Reservations");
         primaryStage.setScene(new Scene(root));

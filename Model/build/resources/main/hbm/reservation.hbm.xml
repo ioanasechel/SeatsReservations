@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="seatsreservations.domain.Reservation"
+           table="RESERVATIONS">
+        <id name="ID" column="ID">
+        </id>
+        <property
+                name="showID"
+                column="ShowID"/>
+        <property
+                name="seats"
+                column="Seats"/>
+        <property
+                name="user"
+                column="User"/>
+    </class>
+</hibernate-mapping>

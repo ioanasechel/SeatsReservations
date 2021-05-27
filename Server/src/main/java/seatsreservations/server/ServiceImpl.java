@@ -3,10 +3,8 @@ package seatsreservations.server;
 import seatsreservations.domain.Manager;
 import seatsreservations.domain.Reservation;
 import seatsreservations.domain.Show;
-import seatsreservations.repository.ManagerRepository;
-import seatsreservations.repository.ReservationRepository;
-import seatsreservations.repository.SeatRepository;
-import seatsreservations.repository.ShowRepository;
+import seatsreservations.domain.Spectator;
+import seatsreservations.repository.*;
 import seatsreservations.service.Observer;
 import seatsreservations.service.Service;
 import seatsreservations.service.ServiceException;
@@ -25,14 +23,16 @@ public class ServiceImpl implements Service {
     private ShowRepository showRepository;
     private SeatRepository seatRepository;
     private ReservationRepository reservationRepository;
+    private SpectatorRepository spectatorRepository;
     private Map<String, Observer> loggedin;
 
     public ServiceImpl(ManagerRepository managerRepository, ShowRepository showRepository,
-                       SeatRepository seatRepository, ReservationRepository reservationRepository) {
+                       SeatRepository seatRepository, ReservationRepository reservationRepository, SpectatorRepository spectatorRepository) {
         this.managerRepository = managerRepository;
         this.showRepository = showRepository;
         this.seatRepository = seatRepository;
         this.reservationRepository = reservationRepository;
+        this.spectatorRepository = spectatorRepository;
         loggedin =  new ConcurrentHashMap<>();
     }
 
@@ -41,13 +41,13 @@ public class ServiceImpl implements Service {
         return managerRepository.findOne(username);
     }
 
-    public Iterable<Manager> findAll() {
+    public Iterable<Manager> findAllManagers() {
         return managerRepository.findAll();
     }
 
     @Override
     public Manager getManager(String username, String password) {
-        for(Manager m : findAll())
+        for(Manager m : findAllManagers())
             if (m.getUsername().equals(username) && m.getPassword().equals(password))
                 return m;
         return null;
@@ -70,6 +70,30 @@ public class ServiceImpl implements Service {
     }
 
     @Override
+    public void loginSpectator(Spectator spectator, Observer client) throws ServiceException {
+        Spectator spectator1 = getSpectator(spectator.getUsername(), spectator.getPassword());
+        if(spectator1!=null){
+            if(loggedin.size()!=0 && loggedin.get(spectator1.getUsername())!=null)
+                throw new ServiceException("Already logged in!");
+            System.out.println("!!!" + spectator1.toString());
+            loggedin.put(spectator1.getUsername(), client);
+        }else
+            throw new ServiceException("Authentication failed");
+
+    }
+
+    private Spectator getSpectator(String username, String password) {
+        for(Spectator s : findAllSpectators())
+            if (s.getUsername().equals(username) && s.getPassword().equals(password))
+                return s;
+        return null;
+    }
+
+    private Iterable<Spectator> findAllSpectators() {
+        return spectatorRepository.findAll();
+    }
+
+    @Override
     public void logOut(Manager manager, Observer client) throws ServiceException {
         Observer localClient = loggedin.remove(manager.getUsername());
         if(localClient == null)
@@ -80,6 +104,31 @@ public class ServiceImpl implements Service {
     public void addShow(Show show, Observer clientSearch) {
         showRepository.save(show);
         notifyShowAdded();
+    }
+
+    @Override
+    public Iterable<Reservation> getAllReservations() {
+        return reservationRepository.findAll();
+    }
+
+    @Override
+    public void cancelReservation(Integer id, Observer client) {
+        reservationRepository.delete(id);
+    }
+
+    @Override
+    public void addReservation(Reservation reservation) {
+        reservationRepository.save(reservation);
+    }
+
+    @Override
+    public Iterable<Reservation> getFilteredReservations(String username) {
+        List<Reservation> filtered = new ArrayList<>();
+        for ( Reservation r : reservationRepository.findAll()){
+            if(r.getUser().equals(username))
+                filtered.add(r);
+        }
+        return filtered;
     }
 
     public List<Manager> getLoggedManagers() {

@@ -12,11 +12,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import seatsreservations.domain.Manager;
+import seatsreservations.domain.Spectator;
 import seatsreservations.service.Service;
 import seatsreservations.service.ServiceException;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.SerializablePermission;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -26,7 +28,7 @@ public class LoginController extends UnicastRemoteObject implements Serializable
     @FXML
     private TextField txtUsername;
     @FXML
-    private TextField txtPassword;
+    private PasswordField txtPassword;
     @FXML
     private CheckBox checkbox1;
     @FXML
@@ -35,8 +37,10 @@ public class LoginController extends UnicastRemoteObject implements Serializable
     Service service;
     Manager manager;
     ManagerMainController managerMainController;
+    UserMainController userMainController;
 
     Parent mainParent;
+    Parent userMainParent;
 
     public LoginController() throws RemoteException {
 
@@ -46,12 +50,15 @@ public class LoginController extends UnicastRemoteObject implements Serializable
         this.service = service;
     }
 
-    public void setParent(Parent p){
-        mainParent=p;
+    public void setParent(Parent p1){
+        mainParent=p1;
     }
 
     public void setManagerMainController(ManagerMainController mainController) {
         this.managerMainController = mainController;
+    }
+    public void setUserMainController(UserMainController mainController) {
+        this.userMainController = mainController;
     }
 
     public void initializeUser() {
@@ -70,39 +77,77 @@ public class LoginController extends UnicastRemoteObject implements Serializable
         ManagerMainController mainController = loader.getController();
     }
 
+    public void loadUserMainStage() throws IOException {
+
+        Stage newStage = new Stage();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/views/UserMainPage.fxml"));
+        AnchorPane layout = loader.load();
+        newStage.setScene(new Scene(layout));
+        newStage.show();
+
+        UserMainController mainController = loader.getController();
+    }
+
     @FXML
     public void Login(ActionEvent actionEvent){
         String username = txtUsername.getText();
         String password = txtPassword.getText();
-        Manager manager = new Manager(username, password, "");
+
 
         try{
-            service.loginManager(manager, managerMainController);
-            Stage stage=new Stage();
-            stage.setTitle("Window for employee " +manager.getUsername());
-            stage.setScene(new Scene(mainParent));
+            if(checkbox1.isSelected()){
+                Manager manager = new Manager(username, password, "");
+                FXMLLoader cloader = new FXMLLoader();
+                cloader.setLocation(getClass().getResource("/views/ManagerMainPage.fxml"));
+                Parent croot=cloader.load();
 
-//            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-//                @Override
-//                public void handle(WindowEvent event) {
-//                    try {
-//                        managerMainController.logout();
-//                    } catch (ServiceException e) {
-//                        e.printStackTrace();
-//                    }
-//                    System.exit(0);
-//                }
-//            });
+                ManagerMainController mainController =
+                        cloader.<ManagerMainController>getController();
+                mainController.setService(service, manager);
 
-            managerMainController.setService(service);
-            stage.show();
-            ((Node)(actionEvent.getSource())).getScene().getWindow().hide();
+                this.setManagerMainController(mainController);
+                this.setParent(croot);
 
-        }   catch  (ServiceException e) {
+
+                service.loginManager(manager, managerMainController);
+                Stage stage = new Stage();
+                stage.setTitle("Window for " + manager.getUsername());
+                stage.setScene(new Scene(mainParent));
+
+                managerMainController.setService(service, manager);
+                stage.show();
+            }
+            else {
+                Spectator spectator = new Spectator(username, password, "");
+                FXMLLoader uloader = new FXMLLoader();
+                uloader.setLocation(getClass().getResource("/views/UserMainPage.fxml"));
+                Parent uroot=uloader.load();
+
+                UserMainController userMainController =
+                        uloader.<UserMainController>getController();
+                userMainController.setService(service, spectator);
+
+                this.setUserMainController(userMainController);
+                this.setParent(uroot);
+
+
+                service.loginSpectator(spectator, userMainController);
+                Stage stage = new Stage();
+                stage.setTitle("Window for " + spectator.getUsername());
+                stage.setScene(new Scene(mainParent));
+
+                userMainController.setService(service, spectator);
+                stage.show();
+
+            }
+            ((Node) (actionEvent.getSource())).getScene().getWindow().hide();
+
+        }   catch  (ServiceException | IOException e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setHeaderText("Authentication failure");
-            alert.setContentText("Wrong username or password");
+            alert.setContentText("Wrong username or password" +e.toString());
             alert.showAndWait();
         }
     }

@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public interface Observer extends Remote {
-    void reservationMade(List<Reservation> list_reservations) throws RemoteException;
+    void reservationUpdate(List<Reservation> list_reservations) throws RemoteException;
 
     void showAdded(List<Show> shows) throws RemoteException;
 }

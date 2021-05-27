@@ -25,7 +25,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class ManagerShowController extends UnicastRemoteObject implements Initializable, Serializable, Observer {
 
@@ -89,7 +88,7 @@ public class ManagerShowController extends UnicastRemoteObject implements Initia
     }
 
     @Override
-    public void reservationMade(List<Reservation> list_reservations) throws RemoteException {
+    public void reservationUpdate(List<Reservation> list_reservations) throws RemoteException {
 
     }
 

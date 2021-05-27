@@ -51,4 +51,14 @@ public class Reservation implements Serializable {
     public void setUser(String user) {
         this.user = user;
     }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "ID=" + ID +
+                ", showID=" + showID +
+                ", seats='" + seats + '\'' +
+                ", user='" + user + '\'' +
+                '}';
+    }
 }

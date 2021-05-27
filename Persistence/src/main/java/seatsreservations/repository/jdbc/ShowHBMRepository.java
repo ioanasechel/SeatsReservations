@@ -45,9 +45,9 @@ public class ShowHBMRepository implements ShowRepository {
             Transaction tx = null;
             try {
                 tx = session.beginTransaction();
-                List<Show> employees = session.createQuery("from Show", Show.class).list();
+                List<Show> shows = session.createQuery("from Show", Show.class).list();
                 tx.commit();
-                return employees;
+                return shows;
             } catch (RuntimeException ex) {
                 if (tx != null)
                     tx.rollback();
